@@ -93,11 +93,11 @@ export default function SummarizedCard({
       <CardHeader className="space-y-3 px-6 pb-0 pt-6 sm:px-8 sm:pt-8">
         <div className="flex items-center gap-2.5">
           <CardTitle className="text-[24px] font-semibold tracking-[-0.02em] text-slate-950">
-            Нийтлэлээс тест үүсгэгч
+            ✨Тест үүсгэх ухаалаг систем
           </CardTitle>
         </div>
         <CardDescription className="text-sm text-slate-500">
-          Нийтлэлийн хураангуй бэлэн боллоо. Шалгаж хараад тестээ үүсгээрэй.
+          Сэдвийн хураангуй бэлэн боллоо. Шалгаж хараад тестээ үүсгээрэй.
         </CardDescription>
       </CardHeader>
 

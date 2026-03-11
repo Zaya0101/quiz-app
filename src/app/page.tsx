@@ -36,15 +36,15 @@ export default function Home() {
       </SignedIn>
       <SignedOut>
         <div className="flex min-h-[calc(100vh-73px)] items-center justify-center px-4 py-10">
-            <Card className="w-full max-w-sm border border-slate-200 bg-white text-center shadow-sm">
+          <Card className="w-full max-w-sm border border-slate-200 bg-white text-center shadow-sm">
             <CardHeader className="gap-2">
               <CardTitle className="text-xl font-semibold">
-              Нэвтрэх шаардлагатай 🔒
+                Нэвтрэх шаардлагатай 🔒
               </CardTitle>
               <CardDescription className="text-sm text-slate-500">
                 Үргэлжлүүлэхийн тулд эхлээд нэвтэрнэ үү.
                 <br />
-                Нэвтэрсний дараа энэ боломжийг ашиглах боломжтой.
+                Нэвтэрсний дараа ашиглах боломжтой.
               </CardDescription>
             </CardHeader>
           </Card>
