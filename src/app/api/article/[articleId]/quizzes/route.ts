@@ -6,8 +6,50 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
+type RawQuiz = {
+  question?: unknown;
+  options?: unknown;
+  answer?: unknown;
+};
+
+function normalizeQuizItem(item: RawQuiz) {
+  const question = typeof item.question === "string" ? item.question.trim() : "";
+  const options = Array.isArray(item.options)
+    ? item.options.filter((opt): opt is string => typeof opt === "string")
+    : [];
+
+  if (!question || options.length !== 4) {
+    return null;
+  }
+
+  let answerIndex = -1;
+
+  if (typeof item.answer === "number") {
+    answerIndex = item.answer;
+  } else if (typeof item.answer === "string") {
+    const trimmedAnswer = item.answer.trim();
+    const numericAnswer = Number(trimmedAnswer);
+
+    if (Number.isInteger(numericAnswer)) {
+      answerIndex = numericAnswer;
+    } else {
+      answerIndex = options.findIndex((option) => option === trimmedAnswer);
+    }
+  }
+
+  if (answerIndex < 0 || answerIndex > 3) {
+    return null;
+  }
+
+  return {
+    question,
+    options,
+    answer: String(answerIndex),
+  };
+}
+
 export async function POST(
-  request: NextRequest,
+  _request: NextRequest,
   context: { params: Promise<{ articleId: string }> },
 ) {
   try {
@@ -41,23 +83,27 @@ export async function POST(
     console.log("article content length:", article.content.length);
 
     const prompt = `
-Generate 5 multiple-choice quiz questions from the article below.
+Доорх нийтлэл дээр үндэслэн 5 олон сонголттой асуулт үүсгэ.
 
-Return ONLY valid JSON.
-Do not add explanation.
-Do not add markdown.
-Do not wrap the response in triple backticks.
+Дүрэм:
+- Нийтлэл ямар хэл дээр байгааг дагаж асуулт, сонголтуудыг бич.
+- Хэрэв оролт Монгол хэл дээр бол бүх асуулт, сонголтыг зөв бичгийн болон утга зүйн алдаагүй кирилл Монгол хэлээр бич.
+- Асуултууд нь нийтлэлийн үйл явдал, утга санаа, гол баримттай шууд холбоотой байх.
+- Сонголт бүр ойлгомжтой, хоорондоо давхцахгүй, нэг л зөв хариулттай байх.
+- ЗӨВХӨН хүчинтэй JSON буцаа. Тайлбар, markdown, code fence бүү нэм.
 
-Return exactly this format:
+Яг энэ форматыг дага:
 [
   {
-    "question": "Question here",
-    "options": ["Option A", "Option B", "Option C", "Option D"],
-    "answer": "Option A"
+    "question": "Асуултын текст",
+    "options": ["Сонголт 1", "Сонголт 2", "Сонголт 3", "Сонголт 4"],
+    "answer": "0"
   }
 ]
 
-Article:
+"answer" нь зөв хариултын индекс (0-3) байна.
+
+Нийтлэл:
 ${article.content}
 `;
 
@@ -78,12 +124,12 @@ ${article.content}
 
     console.log("cleanedText:", cleanedText);
 
-    let parsed: any;
+    let parsed: unknown;
 
     try {
       parsed = JSON.parse(cleanedText);
       console.log("parsed:", parsed);
-    } catch (parseError: any) {
+    } catch (parseError: unknown) {
       console.error("Quiz JSON parse error:", parseError);
       console.error("Raw AI response:", rawText);
 
@@ -103,8 +149,19 @@ ${article.content}
       );
     }
 
+    const normalizedQuizzes = parsed
+      .map((item) => normalizeQuizItem(item as RawQuiz))
+      .filter((item): item is NonNullable<typeof item> => item !== null);
+
+    if (normalizedQuizzes.length === 0) {
+      return NextResponse.json(
+        { error: "AI returned quiz data in unsupported format" },
+        { status: 500 },
+      );
+    }
+
     await prisma.quiz.createMany({
-      data: parsed.map((q: any) => ({
+      data: normalizedQuizzes.map((q) => ({
         articleId,
         question: q.question,
         options: q.options,
@@ -125,15 +182,17 @@ ${article.content}
       },
       { status: 200 },
     );
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err));
+
     console.error("Generate quizzes error FULL:", err);
-    console.error("Generate quizzes error MESSAGE:", err?.message);
-    console.error("Generate quizzes error STACK:", err?.stack);
+    console.error("Generate quizzes error MESSAGE:", error.message);
+    console.error("Generate quizzes error STACK:", error.stack);
 
     return NextResponse.json(
       {
-        error: err?.message || "Failed to generate quizzes",
-        stack: err?.stack || null,
+        error: error.message || "Failed to generate quizzes",
+        stack: error.stack || null,
       },
       { status: 500 },
     );

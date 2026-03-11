@@ -58,10 +58,10 @@ export function AppSidebar({
         <div className="flex items-center justify-between gap-3">
           <div>
             <h2 className="text-base font-semibold tracking-[-0.01em] text-slate-950">
-              History
+              Түүх
             </h2>
             <p className="mt-1 text-sm text-slate-500">
-              Previously generated articles
+              Өмнө үүсгэсэн нийтлэлүүд
             </p>
           </div>
           <SidebarTrigger
@@ -86,10 +86,10 @@ export function AppSidebar({
         ) : articleData.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-2 px-4 py-10 text-center">
             <p className="text-sm font-medium text-slate-600">
-              No history yet
+              Одоогоор түүх алга
             </p>
             <p className="text-xs text-slate-500">
-              Your saved articles will appear here
+              Хадгалсан нийтлэлүүд энд харагдана
             </p>
           </div>
         ) : (

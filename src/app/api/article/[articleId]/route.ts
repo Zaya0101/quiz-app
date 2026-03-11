@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../../lib/prisma";
 
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   context: { params: Promise<{ articleId: string }> },
 ) {
   try {
@@ -21,10 +21,12 @@ export async function GET(
     }
 
     return NextResponse.json({ article }, { status: 200 });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err));
+
     console.error("Article get error:", err);
     return NextResponse.json(
-      { success: false, error: err?.message || "failed to get article" },
+      { success: false, error: error.message || "failed to get article" },
       { status: 500 },
     );
   }

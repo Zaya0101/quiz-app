@@ -68,19 +68,21 @@ export async function POST(req: NextRequest) {
       { success: true, message: "Article created", article },
       { status: 201 },
     );
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err));
+
     console.error("Article creation error:", err);
     return NextResponse.json(
       {
         success: false,
-        error: err?.message || String(err),
+        error: error.message,
       },
       { status: 500 },
     );
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const { userId } = await auth();
 
@@ -112,12 +114,14 @@ export async function GET(req: NextRequest) {
     });
 
     return NextResponse.json({ success: true, articles }, { status: 200 });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err));
+
     console.error("Article fetch error:", err);
     return NextResponse.json(
       {
         success: false,
-        error: err?.message || String(err),
+        error: error.message,
       },
       { status: 500 },
     );

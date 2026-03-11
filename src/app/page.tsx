@@ -16,7 +16,7 @@ export default function Home() {
   const [selectedArticleId, setSelectedArticleId] = useState<string>("");
 
   return (
-    <div className="min-h-screen w-full bg-[#f6f7f8]">
+    <div className="min-h-screen w-full bg-[#D9F7FA]">
       <Header />
       <SignedIn>
         <div className="mx-auto flex min-h-[calc(100vh-73px)] w-full max-w-[1600px]">
@@ -36,15 +36,15 @@ export default function Home() {
       </SignedIn>
       <SignedOut>
         <div className="flex min-h-[calc(100vh-73px)] items-center justify-center px-4 py-10">
-          <Card className="w-full max-w-sm border border-slate-200 bg-white text-center shadow-sm">
+            <Card className="w-full max-w-sm border border-slate-200 bg-white text-center shadow-sm">
             <CardHeader className="gap-2">
               <CardTitle className="text-xl font-semibold">
-              Sign in required 🔒
+              Нэвтрэх шаардлагатай 🔒
               </CardTitle>
               <CardDescription className="text-sm text-slate-500">
-                You need to be singed in to continue.
+                Үргэлжлүүлэхийн тулд эхлээд нэвтэрнэ үү.
                 <br />
-                Please sign in to access this feature.
+                Нэвтэрсний дараа энэ боломжийг ашиглах боломжтой.
               </CardDescription>
             </CardHeader>
           </Card>

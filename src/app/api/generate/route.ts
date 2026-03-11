@@ -23,23 +23,40 @@ export async function POST(request: NextRequest) {
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: `Please provide a concise summary of the following article: ${content}`,
+      contents: `
+Та нийтлэлийг товч бөгөөд ойлгомжтой хураангуйл.
+
+Дүрэм:
+- Нийтлэл ямар хэл дээр байгааг дагаж хариул.
+- Хэрэв оролт Монгол хэл дээр бол хариултыг зөв бичгийн болон утга зүйн алдаагүй кирилл Монгол хэлээр өг.
+- Хураангуй нь эх агуулгатайгаа уялдсан, үйл явдлын дараалал болон гол санааг гажуудуулахгүй байх.
+- Зөвхөн хураангуй текст буцаа. Markdown, тайлбар, нэмэлт гарчиг бүү оруул.
+
+Нийтлэл:
+${content}
+`,
     });
 
     return NextResponse.json({ result: response.text });
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error =
+      err instanceof Error
+        ? err
+        : new Error(typeof err === "string" ? err : JSON.stringify(err));
+    const maybeStatus = (err as { status?: number })?.status;
+
     console.error("GENERATE ERROR FULL:", err);
-    console.error("GENERATE ERROR MESSAGE:", err?.message);
-    console.error("GENERATE ERROR STATUS:", err?.status);
-    console.error("GENERATE ERROR STACK:", err?.stack);
+    console.error("GENERATE ERROR MESSAGE:", error.message);
+    console.error("GENERATE ERROR STATUS:", maybeStatus);
+    console.error("GENERATE ERROR STACK:", error.stack);
     console.error("GENERATE ERROR RAW:", JSON.stringify(err, null, 2));
 
     return NextResponse.json(
       {
-        error: err?.message || err?.statusText || "Failed to generate summary",
-        status: err?.status || 500,
+        error: error.message || "Failed to generate summary",
+        status: maybeStatus || 500,
       },
-      { status: err?.status || 500 },
+      { status: maybeStatus || 500 },
     );
   }
 }

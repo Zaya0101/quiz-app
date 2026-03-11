@@ -15,12 +15,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import GeminiIcon from "../icons/GeminiIcon";
+// import GeminiIcon from "../icons/GeminiIcon";
 import FileIcon from "../icons/FileIcon";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import BookIcon from "../icons/BookIcon";
+// import BookIcon from "../icons/BookIcon";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type ArticleHistoryProps = {
@@ -56,10 +56,10 @@ export default function ArticleHistory({
       try {
         setLoading(true);
         const response = await axios.get(`/api/article/${articleId}`);
-        const articleArray = response.data.article;
-        console.log("Fetched article data:", articleArray);
-        if (articleArray.length > 0) {
-          const article = articleArray[0];
+        const article = response.data?.article;
+        console.log("Fetched article data:", article);
+
+        if (article) {
           setContentData(article.content);
           setSummaryData(article.summary);
           setTitleData(article.title);
@@ -118,13 +118,13 @@ export default function ArticleHistory({
     <Card className="w-full rounded-3xl border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)]">
       <CardHeader className="space-y-3 px-6 pb-0 pt-6 sm:px-8 sm:pt-8">
         <div className="flex items-center gap-2.5">
-          <GeminiIcon />
+          {/* <GeminiIcon /> */}
           <CardTitle className="text-[24px] font-semibold tracking-[-0.02em] text-slate-950">
-            Article Quiz Generator
+            ✨Тест үүсгэх ухаалаг систем
           </CardTitle>
         </div>
         <CardDescription className="flex items-center gap-2 text-sm text-slate-500">
-          <BookIcon /> Summarized content
+          📝Хураангуй агуулга
         </CardDescription>
       </CardHeader>
       <CardContent className="px-6 py-6 sm:px-8">
@@ -140,8 +140,11 @@ export default function ArticleHistory({
             </div>
             <div className="flex w-full items-center gap-1.5">
               <FileIcon />
-              <Label htmlFor="article-content" className="text-sm font-medium text-slate-700">
-                Article Content
+              <Label
+                htmlFor="article-content"
+                className="text-sm font-medium text-slate-700"
+              >
+                Сэдвийн агуулга
               </Label>
             </div>
             <div
@@ -158,7 +161,7 @@ export default function ArticleHistory({
                     variant="outline"
                     className="h-11 cursor-pointer rounded-xl border-slate-200 bg-white text-sm text-slate-700 transition-colors hover:bg-slate-50"
                   >
-                    See more
+                    Дэлгэрэнгүй үзэх
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="border-slate-200 p-6 sm:max-w-3xl">
@@ -183,7 +186,7 @@ export default function ArticleHistory({
           onClick={handleTakeQuiz}
           disabled={loading}
         >
-          Take a quiz
+          Тест эхлүүлэх
         </Button>
       </CardFooter>
     </Card>

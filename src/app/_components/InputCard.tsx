@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import GeminiIcon from "../icons/GeminiIcon";
 import FileIcon from "../icons/FileIcon";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -86,7 +85,7 @@ export default function InputCard({
         axiosError?.response?.data?.error ||
           axiosError?.response?.data?.message ||
           axiosError?.message ||
-          "Generate хийхэд алдаа гарлаа",
+          "Хураангуй үүсгэх үед алдаа гарлаа",
       );
     } finally {
       setLoading(false);
@@ -97,14 +96,14 @@ export default function InputCard({
     <Card className="w-full rounded-3xl border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)]">
       <CardHeader className="space-y-3 px-6 pb-0 pt-6 sm:px-8 sm:pt-8">
         <div className="flex items-center gap-2.5">
-          <GeminiIcon />
+          {/* <GeminiIcon /> */}
           <CardTitle className="text-[24px] font-semibold tracking-[-0.02em] text-slate-950">
-            Article Quiz Generator
+            ✨Тест үүсгэх ухаалаг систем
           </CardTitle>
         </div>
         <CardDescription className="max-w-2xl text-sm leading-6 text-slate-500">
-          Paste your article below to generate a summarize and quiz question.
-          Your articles will saved in the sidebar for future reference.
+          Оруулсан сэдвийнхээ хураангуй мэдээлэл болон тест үүсгээрэй. Зүүн талд
+          бүх сэдэв хадгалагдана.
         </CardDescription>
       </CardHeader>
 
@@ -114,34 +113,40 @@ export default function InputCard({
             <div className="grid gap-2.5">
               <div className="flex items-center gap-1.5">
                 <FileIcon />
-                <Label htmlFor="title" className="text-sm font-medium text-slate-700">
-                  Article Title
+                <Label
+                  htmlFor="title"
+                  className="text-sm font-medium text-slate-700"
+                >
+                  Сэдвийн гарчиг
                 </Label>
               </div>
               <Input
                 id="title"
                 type="text"
-                placeholder="Enter a title for your article..."
+                placeholder="Сэдвийн гарчгаа оруулна уу..."
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="h-12 rounded-xl border-slate-200 bg-white px-4 text-sm shadow-none placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-slate-300"
+                className="h-12 rounded-xl border-slate-200 bg-white px-4 text-sm shadow-none placeholder:text-slate-400 focus-visible:border-[#7DCBD4] focus-visible:ring-2 focus-visible:ring-[#D9F7FA]"
               />
             </div>
 
             <div className="grid gap-2.5">
               <div className="flex items-center gap-1.5">
                 <FileIcon />
-                <Label htmlFor="content" className="text-sm font-medium text-slate-700">
-                  Article Content
+                <Label
+                  htmlFor="content"
+                  className="text-sm font-medium text-slate-700"
+                >
+                  Сэдвийн агуулга
                 </Label>
               </div>
               <Textarea
                 id="content"
                 required
-                placeholder="Paste your article content here..."
+                placeholder="Сэдвийн агуулгаа энд оруулна уу..."
                 value={content}
-                className="min-h-[260px] rounded-2xl border-slate-200 bg-white px-4 py-3 text-sm leading-6 shadow-none placeholder:text-slate-400 focus-visible:ring-1 focus-visible:ring-slate-300"
+                className="min-h-[260px] rounded-2xl border-slate-200 bg-white px-4 py-3 text-sm leading-6 shadow-none placeholder:text-slate-400 focus-visible:border-[#7DCBD4] focus-visible:ring-2 focus-visible:ring-[#D9F7FA]"
                 onChange={(e) => setContent(e.target.value)}
               />
             </div>
@@ -152,11 +157,11 @@ export default function InputCard({
       <CardFooter className="justify-end px-6 pb-6 pt-0 sm:px-8 sm:pb-8">
         <Button
           type="button"
-          className="h-11 rounded-xl bg-slate-700 px-5 text-sm font-medium text-white shadow-none transition-colors hover:bg-slate-800 disabled:bg-slate-300"
+          className="h-11 cursor-pointer rounded-xl bg-[#7DCBD4] px-5 text-sm font-medium text-white shadow-none transition-colors hover:bg-[#1F6066] disabled:cursor-not-allowed disabled:bg-slate-300"
           disabled={!title || !content || loading}
           onClick={handleGenerate}
         >
-          {loading ? "Generate summary..." : "Generate summary"}
+          {loading ? "Хураангуй үүсгэж байна..." : "Хураангуй үүсгэх"}
         </Button>
       </CardFooter>
     </Card>

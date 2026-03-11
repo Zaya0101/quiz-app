@@ -52,18 +52,18 @@ export default function QuizCompleted({
             <div className="flex items-center gap-2.5">
             <GeminiIcon />
             <div className="text-[24px] font-semibold tracking-[-0.02em] text-slate-950">
-              Quiz completed
+              Тест дууслаа
             </div>
           </div>
           <div className="text-sm leading-6 text-slate-500">
-            Let’s see what you did
+            Үр дүнгээ харцгаая
           </div>
           </div>
 
           <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-5 sm:p-6">
             <div className="flex items-center gap-2">
               <div className="text-lg font-medium text-slate-950">
-                Your score:
+                Таны оноо:
               </div>
               <div className="text-lg font-medium text-slate-950">
                 {score}/
@@ -85,17 +85,17 @@ export default function QuizCompleted({
                 </div>
                 <div className="flex max-w-[520px] flex-col gap-1">
                   <div className="text-xs font-medium uppercase tracking-[0.08em] text-slate-400">
-                    Question {index + 1}
+                    Асуулт {index + 1}
                   </div>
                   <div className="text-sm font-medium leading-6 text-slate-900">
                     {r.question}
                   </div>
                   <div className="text-sm leading-6 text-slate-600">
-                    Your answer: {r.selected}
+                    Таны хариулт: {r.selected}
                   </div>
                   {!r.isCorrect && (
                     <div className="text-sm leading-6 text-emerald-600">
-                      Correct: {r.correct}
+                      Зөв хариулт: {r.correct}
                     </div>
                   )}
                 </div>
@@ -110,14 +110,14 @@ export default function QuizCompleted({
               onClick={handleRestartQuiz}
             >
               <ReloadIcon />
-              Restart quiz
+              Тестийг дахин эхлүүлэх
             </Button>
             <Button
               onClick={handleSaveAndLeave}
               className="h-11 w-full cursor-pointer rounded-xl bg-slate-700 text-white hover:bg-slate-800 sm:w-auto"
             >
               <BookMarkIcon />
-              Save and leave
+              Хадгалаад гарах
             </Button>
           </div>
         </div>

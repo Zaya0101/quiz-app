@@ -78,11 +78,11 @@ export default function HistoryQuickTest({
               <div className="flex items-center gap-2.5">
             <GeminiIcon />
                 <div className="text-[24px] font-semibold tracking-[-0.02em] text-slate-950">
-                  Quick test
+                  Шуурхай тест
                 </div>
               </div>
               <div className="text-sm leading-6 text-slate-500">
-                Take a quick test about your knowledge from your content.
+                Уншсан агуулгынхаа ойлголтыг шуурхай шалгаарай.
               </div>
             </div>
             <Dialog>
@@ -98,11 +98,10 @@ export default function HistoryQuickTest({
                 <DialogContent className="border-slate-200 p-6 sm:max-w-lg">
                   <DialogHeader>
                     <DialogTitle className="text-[24px] font-semibold tracking-[-0.02em] text-slate-950">
-                      Are you sure?
+                      Та итгэлтэй байна уу?
                     </DialogTitle>
                     <DialogDescription className="text-sm leading-6 text-red-500">
-                      If you press &apos;Cancel&apos;, this quiz will restart
-                      from the beginning.
+                      Тестээс гарвал эхнээс нь дахин эхлэх болно.
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter className="flex-col gap-3 sm:flex-row sm:justify-between">
@@ -111,7 +110,7 @@ export default function HistoryQuickTest({
                         type="submit"
                         className="h-11 w-full rounded-xl bg-slate-700 text-white hover:bg-slate-800 sm:w-auto"
                       >
-                        Go back
+                        Буцах
                       </Button>
                     </DialogClose>
                     <Button
@@ -119,7 +118,7 @@ export default function HistoryQuickTest({
                       className="h-11 w-full rounded-xl border-slate-200 text-slate-700 hover:bg-slate-50 sm:w-auto"
                       onClick={() => setStep(1)}
                     >
-                      Cancel quiz
+                      Тестээс гарах
                     </Button>
                   </DialogFooter>
                 </DialogContent>

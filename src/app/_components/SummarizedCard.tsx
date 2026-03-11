@@ -95,17 +95,17 @@ export default function SummarizedCard({
         <div className="flex items-center gap-2.5">
           <GeminiIcon />
           <CardTitle className="text-[24px] font-semibold tracking-[-0.02em] text-slate-950">
-            Article Quiz Generator
+            Нийтлэлээс тест үүсгэгч
           </CardTitle>
         </div>
         <CardDescription className="text-sm text-slate-500">
-          Your article has been summarized. Review it, then generate a quiz.
+          Нийтлэлийн хураангуй бэлэн боллоо. Шалгаж хараад тестээ үүсгээрэй.
         </CardDescription>
       </CardHeader>
 
       <CardContent className="flex flex-col gap-4 px-6 py-6 sm:px-8">
         <CardDescription className="flex items-center gap-2 text-sm text-slate-500">
-          <BookIcon /> Summarized content
+          <BookIcon /> Хураангуй агуулга
         </CardDescription>
 
         <div className="text-[26px] font-semibold leading-8 tracking-[-0.02em] text-slate-950">
@@ -126,7 +126,7 @@ export default function SummarizedCard({
                 variant="outline"
                 className="h-11 w-full cursor-pointer rounded-xl border-slate-200 bg-white text-sm text-slate-700 transition-colors hover:bg-slate-50 sm:w-auto"
               >
-                See content
+                Эх нийтлэл харах
               </Button>
             </DialogTrigger>
 
@@ -149,7 +149,7 @@ export default function SummarizedCard({
           disabled={loading || !articleId}
           onClick={handleTakeQuiz}
         >
-          {loading ? "Take a quiz..." : "Take a quiz"}
+          {loading ? "Тест бэлдэж байна..." : "Тест эхлүүлэх"}
         </Button>
       </CardFooter>
     </Card>
