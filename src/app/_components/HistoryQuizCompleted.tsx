@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import GeminiIcon from "../icons/GeminiIcon";
 import WrongIcon from "../icons/WrongIcon";
 import CorrectIcon from "../icons/CorrectIcon";
 import ReloadIcon from "../icons/ReloadIcon";
@@ -51,7 +50,6 @@ export default function HistoryQuizCompleted({
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2.5">
-            <GeminiIcon />
             <div className="text-[24px] font-semibold tracking-[-0.02em] text-slate-950">
               Тест дууслаа
             </div>

@@ -15,12 +15,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-// import GeminiIcon from "../icons/GeminiIcon";
 import FileIcon from "../icons/FileIcon";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import axios from "axios";
-// import BookIcon from "../icons/BookIcon";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type ArticleHistoryProps = {
@@ -118,7 +116,6 @@ export default function ArticleHistory({
     <Card className="w-full rounded-3xl border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)]">
       <CardHeader className="space-y-3 px-6 pb-0 pt-6 sm:px-8 sm:pt-8">
         <div className="flex items-center gap-2.5">
-          {/* <GeminiIcon /> */}
           <CardTitle className="text-[24px] font-semibold tracking-[-0.02em] text-slate-950">
             ✨Тест үүсгэх ухаалаг систем
           </CardTitle>
