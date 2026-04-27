@@ -75,13 +75,19 @@ export default function SummarizedCard({
       setStep(3);
     } catch (err: unknown) {
       const axiosError = err as {
-        response?: { data?: unknown };
+        response?: { data?: { error?: string; message?: string } };
         message?: string;
       };
 
       console.error(
         "HANDLE TAKE QUIZ ERROR:",
         axiosError?.response?.data || axiosError?.message,
+      );
+      alert(
+        axiosError?.response?.data?.error ||
+          axiosError?.response?.data?.message ||
+          axiosError?.message ||
+          "Тест үүсгэх үед алдаа гарлаа",
       );
     } finally {
       setLoading(false);

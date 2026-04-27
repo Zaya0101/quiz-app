@@ -1,15 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenAI } from "@google/genai";
 import prisma from "../../../../../../lib/prisma";
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-});
+import {
+  generateTextWithFallback,
+  getAiStatusCode,
+  isAiOverloaded,
+} from "@/lib/gemini";
 
 type RawQuiz = {
   question?: unknown;
   options?: unknown;
   answer?: unknown;
+};
+
+const quizResponseSchema = {
+  type: "array",
+  items: {
+    type: "object",
+    properties: {
+      question: { type: "string" },
+      options: {
+        type: "array",
+        items: { type: "string" },
+        minItems: 4,
+        maxItems: 4,
+      },
+      answer: { type: "string" },
+    },
+    required: ["question", "options", "answer"],
+  },
 };
 
 function normalizeQuizItem(item: RawQuiz) {
@@ -80,6 +98,21 @@ export async function POST(
       );
     }
 
+    const existingQuizzes = await prisma.quiz.findMany({
+      where: { articleId },
+      orderBy: { createdAt: "asc" },
+    });
+
+    if (existingQuizzes.length > 0) {
+      return NextResponse.json(
+        {
+          success: true,
+          quizzes: existingQuizzes,
+        },
+        { status: 200 },
+      );
+    }
+
     console.log("article content length:", article.content.length);
 
     const prompt = `
@@ -107,14 +140,14 @@ export async function POST(
 ${article.content}
 `;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
+    const { text: rawText, model } = await generateTextWithFallback(prompt, {
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: quizResponseSchema,
+      },
     });
 
-    console.log("AI response received");
-
-    const rawText = response.text || "";
+    console.log("AI response received from model:", model);
     console.log("rawText:", rawText);
 
     const cleanedText = rawText
@@ -184,6 +217,7 @@ ${article.content}
     );
   } catch (err: unknown) {
     const error = err instanceof Error ? err : new Error(String(err));
+    const status = getAiStatusCode(err);
 
     console.error("Generate quizzes error FULL:", err);
     console.error("Generate quizzes error MESSAGE:", error.message);
@@ -191,10 +225,12 @@ ${article.content}
 
     return NextResponse.json(
       {
-        error: error.message || "Failed to generate quizzes",
+        error: isAiOverloaded(err)
+          ? "AI service tur achaalaltai baina. Quiz dahiad neg oroldooroi."
+          : error.message || "Failed to generate quizzes",
         stack: error.stack || null,
       },
-      { status: 500 },
+      { status },
     );
   }
 }

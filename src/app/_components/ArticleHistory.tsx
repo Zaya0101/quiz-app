@@ -88,8 +88,19 @@ export default function ArticleHistory({
       setHistoryQuiz(parsedQuiz);
       setStep(6);
       console.log("response from histoty", parsedQuiz);
-    } catch (err) {
+    } catch (err: unknown) {
+      const axiosError = err as {
+        response?: { data?: { error?: string; message?: string } };
+        message?: string;
+      };
+
       console.error(err);
+      alert(
+        axiosError?.response?.data?.error ||
+          axiosError?.response?.data?.message ||
+          axiosError?.message ||
+          "Тест үүсгэх үед алдаа гарлаа",
+      );
     } finally {
       setLoading(false);
     }

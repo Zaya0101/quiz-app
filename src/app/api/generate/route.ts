@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenAI } from "@google/genai";
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-});
+import {
+  generateTextWithFallback,
+  getAiStatusCode,
+  isAiOverloaded,
+} from "@/lib/gemini";
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,9 +21,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No message" }, { status: 400 });
     }
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `
+    const { text, model } = await generateTextWithFallback(`
 Та нийтлэлийг товч бөгөөд ойлгомжтой хураангуйл.
 
 Дүрэм:
@@ -34,16 +32,16 @@ export async function POST(request: NextRequest) {
 
 Нийтлэл:
 ${content}
-`,
-    });
+`);
 
-    return NextResponse.json({ result: response.text });
+    return NextResponse.json({ result: text, model });
   } catch (err: unknown) {
     const error =
       err instanceof Error
         ? err
         : new Error(typeof err === "string" ? err : JSON.stringify(err));
-    const maybeStatus = (err as { status?: number })?.status;
+    const maybeStatus = getAiStatusCode(err);
+    const isHighDemandError = isAiOverloaded(err);
 
     console.error("GENERATE ERROR FULL:", err);
     console.error("GENERATE ERROR MESSAGE:", error.message);
@@ -53,10 +51,12 @@ ${content}
 
     return NextResponse.json(
       {
-        error: error.message || "Failed to generate summary",
-        status: maybeStatus || 500,
+        error: isHighDemandError
+          ? "AI service tur achaalaltai baina. Dahiad neg oroldooroi."
+          : error.message || "Failed to generate summary",
+        status: maybeStatus,
       },
-      { status: maybeStatus || 500 },
+      { status: maybeStatus },
     );
   }
 }

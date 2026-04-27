@@ -1,13 +1,32 @@
 import { NextRequest } from "next/server";
-import { GoogleGenAI } from "@google/genai";
-
-// The client gets the API key from the environment variable `GEMINI_API_KEY`.
-const ai = new GoogleGenAI({});
+import {
+  generateTextWithFallback,
+  getAiStatusCode,
+  isAiOverloaded,
+} from "@/lib/gemini";
 
 type RawQuiz = {
   question?: unknown;
   options?: unknown;
   answer?: unknown;
+};
+
+const quizResponseSchema = {
+  type: "array",
+  items: {
+    type: "object",
+    properties: {
+      question: { type: "string" },
+      options: {
+        type: "array",
+        items: { type: "string" },
+        minItems: 4,
+        maxItems: 4,
+      },
+      answer: { type: "string" },
+    },
+    required: ["question", "options", "answer"],
+  },
 };
 
 function normalizeQuizItem(item: RawQuiz) {
@@ -48,15 +67,21 @@ function normalizeQuizItem(item: RawQuiz) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!process.env.GEMINI_API_KEY) {
+      return Response.json(
+        { error: "GEMINI_API_KEY is missing in .env" },
+        { status: 500 },
+      );
+    }
+
     const body = await request.json();
     const { content } = body;
 
     if (!content) {
       return Response.json({ error: "No message" }, { status: 400 });
     }
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `
+
+    const { text } = await generateTextWithFallback(`
 Доорх нийтлэл дээр үндэслэн 5 олон сонголттой асуулт үүсгэ.
 
 Дүрэм:
@@ -79,9 +104,14 @@ export async function POST(request: NextRequest) {
 
 Нийтлэл:
 ${content}
-`,
+`, {
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: quizResponseSchema,
+      },
     });
-    const cleanedText = (response.text ?? "")
+
+    const cleanedText = text
       .replace(/^\s*```json\s*/, "")
       .replace(/```\s*$/, "");
     console.log("Cleaned Text:", cleanedText);
@@ -106,10 +136,20 @@ ${content}
     }
 
     return Response.json({ result: normalizedQuizzes });
-  } catch (err) {
+  } catch (err: unknown) {
+    const status = getAiStatusCode(err);
+    const error = err instanceof Error ? err : new Error(String(err));
+
+    console.error("GENERATE QUIZZES ERROR FULL:", err);
+
     return Response.json(
-      { error: "Server aldaa garlaa", details: String(err) },
-      { status: 500 }
+      {
+        error: isAiOverloaded(err)
+          ? "AI service tur achaalaltai baina. Quiz dahiad neg oroldooroi."
+          : error.message || "Server aldaa garlaa",
+        details: String(err),
+      },
+      { status }
     );
   }
 }
